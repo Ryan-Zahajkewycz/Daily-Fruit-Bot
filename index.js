@@ -1,0 +1,64 @@
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+
+// Your list of fruits
+const fruits = [
+  {
+    name: "Apple",
+    fact: "Apples float because 25% of their volume is air."
+  },
+  {
+    name: "Banana",
+    fact: "Bananas are berries, but strawberries aren’t!"
+  },
+  {
+    name: "Grape",
+    fact: "Grapes explode when you put them in the microwave."
+  },
+  {
+    name: "Pear",
+    fact: "There are over 3000 verieties of pears"
+  },
+  {
+    name: "Blueberry",
+    fact: "Blueberrys are purple in the inside"
+  },
+    {
+    name: "Durian",
+    fact: "🤢"
+  },
+     {
+    name: "Watermelon",
+    fact: "Fact: the red part is the best"
+  },
+  // Add more fruits and facts here...
+];
+
+
+// Replace with your channel ID
+const channelId = '1403889496415539200';
+
+function getRandomFruit() {
+  return fruits[Math.floor(Math.random() * fruits.length)];
+}
+
+client.once('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+
+  // Send a fruit message immediately (optional)
+  sendDailyFruit();
+
+  // Send fruit message every 24 hours (86400000 milliseconds)
+  setInterval(sendDailyFruit, 86400000);
+});
+
+async function sendDailyFruit() {
+  const channel = await client.channels.fetch(channelId);
+  if (!channel) return console.log("Channel not found");
+
+  const fruit = getRandomFruit();
+  channel.send(`🍎 Today's fruit is: **${fruit.name}**\nFun fact: ${fruit.fact}`);
+}
+
+client.login(process.env.TOKEN);
+
