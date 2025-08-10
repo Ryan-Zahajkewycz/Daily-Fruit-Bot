@@ -1,12 +1,11 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
+const cron = require('node-cron');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
-
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Your list of fruits
 const fruits = [
   { name: "Apple", fact: "Apples float because 25% of their volume is air." },
   { name: "Banana", fact: "Bananas are berries, but strawberries aren’t!" },
@@ -17,7 +16,6 @@ const fruits = [
   { name: "Watermelon", fact: "Fact: the red part is the best" },
 ];
 
-// Replace with your channel ID
 const channelId = '1403889496415539200';
 
 function getRandomFruit() {
@@ -27,9 +25,15 @@ function getRandomFruit() {
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
-  sendDailyFruit();
+  // Schedule the task to run at 9:00 AM every day
+  cron.schedule('0 9 * * *', () => {
+    sendDailyFruit();
+  }, {
+    timezone: "YOUR_TIMEZONE" // e.g. "America/New_York"
+  });
 
-  setInterval(sendDailyFruit, 86400000); // every 24 hours
+  // Optional: send once right on startup
+  sendDailyFruit();
 });
 
 async function sendDailyFruit() {
@@ -40,7 +44,6 @@ async function sendDailyFruit() {
   channel.send(`🍎 Today's fruit is: **${fruit.name}**\nFun fact: ${fruit.fact}`);
 }
 
-// Express server to keep bot alive
 app.get('/', (req, res) => {
   res.send('Bot is running!');
 });
@@ -50,4 +53,3 @@ app.listen(port, () => {
 });
 
 client.login(process.env.TOKEN);
-
