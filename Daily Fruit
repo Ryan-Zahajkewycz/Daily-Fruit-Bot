@@ -29,7 +29,7 @@ client.once('ready', () => {
   cron.schedule('0 9 * * *', () => {
     sendDailyFruit();
   }, {
-    timezone: "YOUR_TIMEZONE" // e.g. "America/New_York"
+    timezone: "America/New_York"
   });
 
   // Optional: send once right on startup
